@@ -1,0 +1,155 @@
+
+CREATE DATABASE 808;
+use 808
+
+CREATE TABLE `user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `fullname` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `phone` varchar(45) DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL,
+  `address_id` int DEFAULT NULL,
+  `avatar` text,
+  `reset_password_token` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `brand` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `slug` varchar(45) NOT NULL,
+  `thumbnail` text,
+  `create_at` datetime NOT NULL,
+  `update_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+CREATE TABLE `unit` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `create_at` datetime NOT NULL,
+  `update_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `supplier` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `thumbnail` text,
+  `create_at` datetime NOT NULL,
+  `update_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `category` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `slug` varchar(45) NOT NULL,
+  `thumbnail` text,
+  `create_at` datetime NOT NULL,
+  `update_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `product` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `short_description` varchar(45) NOT NULL,
+  `long_description` varchar(45) NOT NULL,
+  `code_name` varchar(45) NOT NULL,
+  `slug` varchar(45) NOT NULL,
+  `category_id` int NOT NULL,
+  `unit_id` int NOT NULL,
+  `brand_id` int NOT NULL,
+  `supplier_id` int NOT NULL,
+  `create_at` datetime NOT NULL,
+  `update_at` datetime DEFAULT NULL,
+  `thumbnail` text,
+  PRIMARY KEY (`id`),
+  KEY `fk_Category_idx` (`category_id`),
+  KEY `fk_Brand_idx` (`brand_id`),
+  KEY `fk_Supplier_idx` (`supplier_id`),
+  KEY `fk_Unit_idx` (`unit_id`),
+  CONSTRAINT `fk_Brand` FOREIGN KEY (`brand_id`) REFERENCES `brand` (`id`),
+  CONSTRAINT `fk_Category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
+  CONSTRAINT `fk_Supplier` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`),
+  CONSTRAINT `fk_Unit` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `property` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cpu1` varchar(45) NOT NULL,
+  `ram` varchar(45) NOT NULL,
+  `gpu` varchar(45) NOT NULL,
+  `screen_size` varchar(45) DEFAULT NULL,
+  `screen_resolution` varchar(45) DEFAULT NULL,
+  `screen_technology` varchar(45) DEFAULT NULL,
+  `storage_capacity` varchar(45) DEFAULT NULL,
+  `ports` varchar(45) DEFAULT NULL,
+  `battery_capacity` varchar(45) DEFAULT NULL,
+  `battery_life` varchar(45) DEFAULT NULL,
+  `weight` varchar(45) DEFAULT NULL,
+  `dimensions` varchar(45) DEFAULT NULL,
+  `operating_system` varchar(45) DEFAULT NULL,
+  `color` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `variant` (
+  `id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `property_id` int NOT NULL,
+  `sku` varchar(45) DEFAULT NULL,
+  `cost` double DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `status` int DEFAULT NULL,
+  `create_at` datetime DEFAULT NULL,
+  `update_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`,`product_id`,`property_id`),
+  KEY `fk_Property_idx` (`property_id`),
+  KEY `fk_Product_idx` (`product_id`),
+  CONSTRAINT `fk_Product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
+  CONSTRAINT `fk_Property` FOREIGN KEY (`property_id`) REFERENCES `property` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `cart` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `status` varchar(45) NOT NULL,
+  `create_at` varchar(45) NOT NULL,
+  `update_at` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `cart_variant` (
+  `cart_id` int NOT NULL,
+  `variant_id` int DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  PRIMARY KEY (`cart_id`),
+  KEY `fk_cart_variant_idx` (`variant_id`),
+  CONSTRAINT `fk_cart` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`),
+  CONSTRAINT `fk_cart_variant` FOREIGN KEY (`variant_id`) REFERENCES `variant` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+CREATE TABLE `image` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` text,
+  `path` text,
+  `content_type` varchar(45) DEFAULT NULL,
+  `size` varchar(45) DEFAULT NULL,
+  `group` varchar(45) DEFAULT NULL,
+  `is_thumbnail` varchar(45) DEFAULT NULL,
+  `is_eliminated` varchar(45) DEFAULT NULL,
+  `product_id` int DEFAULT NULL,
+  `create_at` datetime DEFAULT NULL,
+  `update_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_product_idx` (`product_id`),
+  CONSTRAINT `fk_product_image` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
